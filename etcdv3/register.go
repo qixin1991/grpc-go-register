@@ -28,7 +28,6 @@ func Register(name string, host string, port int, target string, interval time.D
 	client, err := etcd3.New(etcd3.Config{
 		Endpoints: strings.Split(target, ","),
 	})
-	fmt.Println(*client)
 	if err != nil {
 		return fmt.Errorf("grpclb: create etcd3 client failed: %v", err)
 	}
