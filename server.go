@@ -45,7 +45,7 @@ func main() {
 		s := <-ch
 		log.Printf("receive signal '%v'", s)
 		grpclb.UnRegister()
-		os.Exit(1)
+		os.Exit(0)
 	}()
 
 	log.Printf("starting hello service at %d", *port)

@@ -13,7 +13,7 @@ import (
 
 // Prefix should start and end with no slash
 var Prefix = "etcd3_naming"
-var client etcd3.Client
+var client *etcd3.Client
 var serviceKey string
 
 var stopSignal = make(chan bool, 1)
@@ -25,7 +25,7 @@ func Register(name string, host string, port int, target string, interval time.D
 
 	// get endpoints for register dial address
 	var err error
-	client, err := etcd3.New(etcd3.Config{
+	client, err = etcd3.New(etcd3.Config{
 		Endpoints: strings.Split(target, ","),
 	})
 	if err != nil {
@@ -70,6 +70,7 @@ func UnRegister() error {
 	stopSignal <- true
 	stopSignal = make(chan bool, 1) // just a hack to avoid multi UnRegister deadlock
 	var err error
+	// fmt.Println(client)
 	if _, err := client.Delete(context.Background(), serviceKey); err != nil {
 		log.Printf("grpclb: deregister '%s' failed: %s", serviceKey, err.Error())
 	} else {
