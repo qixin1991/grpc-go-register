@@ -1,4 +1,4 @@
-package etcdv3
+package register
 
 import (
 	"fmt"
@@ -12,16 +12,15 @@ import (
 )
 
 // Prefix should start and end with no slash
-var Prefix = "etcd3_naming"
 var client *etcd3.Client
 var serviceKey string
 
 var stopSignal = make(chan bool, 1)
 
-// Register
-func Register(name string, host string, port int, target string, interval time.Duration, ttl int) error {
+// Registry registry for your service
+func Registry(prefix string, name string, host string, port int, target string, interval time.Duration, ttl int) error {
 	serviceValue := fmt.Sprintf("%s:%d", host, port)
-	serviceKey = fmt.Sprintf("/%s/%s/%s", Prefix, name, serviceValue)
+	serviceKey = fmt.Sprintf("/%s/%s/%s", prefix, name, serviceValue)
 
 	// get endpoints for register dial address
 	var err error
@@ -70,7 +69,6 @@ func UnRegister() error {
 	stopSignal <- true
 	stopSignal = make(chan bool, 1) // just a hack to avoid multi UnRegister deadlock
 	var err error
-	// fmt.Println(client)
 	if _, err := client.Delete(context.Background(), serviceKey); err != nil {
 		log.Printf("grpclb: deregister '%s' failed: %s", serviceKey, err.Error())
 	} else {

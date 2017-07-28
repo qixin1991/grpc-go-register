@@ -1,4 +1,4 @@
 #!/bin/zsh
-echo '---> 生成go代码...'
+echo '---> code genertor for Go...'
 protoc -I rpc/ rpc/hw.proto --go_out=plugins=grpc:rpc
 echo '---> ok.'

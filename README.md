@@ -1,3 +1,12 @@
+# grpc-go-register
+
+grpc golang server side register
+
+# Usage Example
+
+_server.go_
+
+```go
 package main
 
 import (
@@ -13,8 +22,9 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	grpclb "grpc-lb-server/etcdv3"
-	pb "grpc-lb-server/rpc"
+	"github.com/qixin1991/grpc-go-register/rpc"
+
+	"github.com/qixin1991/grpc-go-register/register"
 )
 
 var (
@@ -23,6 +33,7 @@ var (
 	reg  = flag.String("reg", "http://172.20.9.101:2379,http://172.20.9.103:2379,http://172.20.9.105:2379", "register etcd address")
 	host = flag.String("host", "", "local bind ip address")
 )
+var prefix = "etcd3_naming"
 
 func main() {
 	flag.Parse()
@@ -34,7 +45,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = grpclb.Register(*serv, *host, *port, *reg, time.Second*10, 15)
+	err = register.Registry(prefix, *serv, *host, *port, *reg, time.Second*10, 15)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +61,7 @@ func main() {
 
 	log.Printf("starting hello service at %d", *port)
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	rpc.RegisterGreeterServer(s, &server{})
 	s.Serve(lis)
 }
 
@@ -67,3 +78,11 @@ func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	fmt.Printf("%v: Receive Again is %s\n", time.Now(), in.Name)
 	return &pb.HelloReply{Message: "Hello Again " + in.Name}, nil
 }
+
+```
+
+Issue the following command
+
+```shell
+go run server.go --host [YOUR_IP] --reg [etcd3_cluster]
+```
