@@ -10,3 +10,4 @@ import:
   version: ~1.4.2
   subpackages:
   - naming
+  - transport

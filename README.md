@@ -55,7 +55,7 @@ func main() {
 	go func() {
 		s := <-ch
 		log.Printf("receive signal '%v'", s)
-		grpclb.UnRegister()
+		register.UnRegister()
 		os.Exit(0)
 	}()
 
@@ -69,14 +69,14 @@ func main() {
 type server struct{}
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *server) SayHello(ctx context.Context, in *rpc.HelloRequest) (*rpc.HelloReply, error) {
 	fmt.Printf("%v: Receive is %s\n", time.Now(), in.Name)
-	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+	return &rpc.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
-func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *server) SayHelloAgain(ctx context.Context, in *rpc.HelloRequest) (*rpc.HelloReply, error) {
 	fmt.Printf("%v: Receive Again is %s\n", time.Now(), in.Name)
-	return &pb.HelloReply{Message: "Hello Again " + in.Name}, nil
+	return &rpc.HelloReply{Message: "Hello Again " + in.Name}, nil
 }
 
 ```
